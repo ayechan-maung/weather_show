@@ -34,7 +34,7 @@ class WeatherApp extends HookWidget {
           case WeatherStatus.initial:
             return Container();
           case WeatherStatus.loading:
-            return Center(child: CircularProgressIndicator(),);
+            return const Center(child: CircularProgressIndicator(),);
           case WeatherStatus.success:
             return Stack(
               children: [
@@ -50,7 +50,7 @@ class WeatherApp extends HookWidget {
   }
 
   String backgroundAssets(String condition) {
-    final background = "assets/background";
+    const background = "assets/background";
     switch (condition.toLowerCase()) {
       case "sunny":
         return "$background/sunny.jpg";

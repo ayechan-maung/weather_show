@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_show/app_consts.dart';
+import 'package:weather_show/src/auth/auth_gate.dart';
 import 'package:weather_show/src/bloc/weather_cubit.dart';
 import 'package:weather_show/src/model/forecast_weather_data_model.dart';
 import 'package:weather_show/src/utilities/extensions.dart';
@@ -34,13 +35,23 @@ class CurrentWeatherWidget extends StatelessWidget {
                     });
                   },
                   icon: const Icon(Icons.search)),
-              PopupMenuButton(
+              PopupMenuButton<int>(
+                onSelected: (value) {
+                  switch(value) {
+                    case 0:
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) => const AuthGate()));
+                  }
+                },
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem(
+                        value: 0,
                         child: _popupItem(
-                            label: "Admin", trailing: const Icon(CupertinoIcons.person_alt_circle))),
+                            label: "Admin",
+                            trailing: const Icon(CupertinoIcons.person_alt_circle))),
                     PopupMenuItem(
+                        value: 1,
                         child: _popupItem(
                             label: "Celsius",
                             trailing: const Padding(
@@ -51,6 +62,7 @@ class CurrentWeatherWidget extends StatelessWidget {
                               ),
                             ))),
                     PopupMenuItem(
+                        value: 2,
                         child: _popupItem(
                             label: "Fahrenheit",
                             trailing: const Padding(
@@ -159,27 +171,29 @@ class CurrentWeatherWidget extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.grey.withOpacity(0.3), borderRadius: BorderRadius.circular(8)),
             child: Column(
-              children: currentWeather.forecast!.forecastday!.map((day) => Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Text(
-                      dayFormat(day.date ?? ""),
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Image.asset(
-                      "assets/day/${getIcon(day.day!.condition!.code!)}.png",
-                      width: 45,
-                      height: 45,
-                    ),
-                    const Spacer(),
-                    Text(
-                      "${day.day!.mintempC!.round()} / ${day.day!.maxtempC!.round()}",
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              )).toList(),
+              children: currentWeather.forecast!.forecastday!
+                  .map((day) => Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              dayFormat(day.date ?? ""),
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            Image.asset(
+                              "assets/day/${getIcon(day.day!.condition!.code!)}.png",
+                              width: 45,
+                              height: 45,
+                            ),
+                            const Spacer(),
+                            Text(
+                              "${day.day!.mintempC!.round()} / ${day.day!.maxtempC!.round()}",
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
           Container(
