@@ -17,11 +17,12 @@ class WeatherHome extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: Colors.transparent,
           body: [
             CurrentWeatherWidget(forecastWeather!),
             ForecastWeatherWidget(forecastWeather!.forecast!)
           ][state],
-          bottomNavigationBar: BottomNavigationBar(
+          bottomNavigationBar: BottomNavigationBar(backgroundColor: Colors.transparent,
             onTap: (index) {
               context.read<IndexCubit>().changeIndex(index);
             },

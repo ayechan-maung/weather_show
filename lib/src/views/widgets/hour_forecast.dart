@@ -20,7 +20,7 @@ class HourForecast extends StatelessWidget {
             twelveHrFormat(hour.time ?? ""),
             style: sty,
           ),
-          Image.asset("assets/${hour.isDay == 1? 'day': 'night'}/${getIcon(hour.condition!.code!)}.png",width: 35,height: 35,),
+          Image.asset("assets/${hour.isDay == 1? 'day': 'night'}/${getIcon(hour.condition!.code!)}.png",width: 45,height: 45,),
           Text(
             "${hour.tempC!.round()} °",
             style: sty,

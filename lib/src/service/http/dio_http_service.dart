@@ -86,4 +86,23 @@ class DioHttpService implements HttpService {
 
     return response.data;
   }
+
+  @override
+  Future search(String endpoint, {Map<String, dynamic>? queryParameters}) async{
+    final Response<dynamic> response = await dio.get(
+      endpoint,
+      queryParameters: queryParameters,
+    );
+
+    if (response.data == null || response.statusCode != 200) {
+      // throw HttpException(
+      //   title: 'Http Error!',
+      //   statusCode: response.statusCode,
+      //   message: response.statusMessage,
+      // );
+      throw Exception('Throwing Error');
+    }
+
+    return response.data;
+  }
 }

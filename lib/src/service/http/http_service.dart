@@ -18,4 +18,9 @@ abstract class HttpService {
     String endpoint, {
     Map<String, dynamic>? queryParameters,
   });
+
+  Future<dynamic> search(
+      String endpoint, {
+        Map<String, dynamic>? queryParameters,
+      });
 }

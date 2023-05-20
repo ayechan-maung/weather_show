@@ -2,34 +2,59 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:weather_show/src/service/location_service.dart';
 
 import '../bloc/weather_cubit.dart';
 import '../bloc/weather_state.dart';
 import 'weather_home.dart';
 
-class WeatherApp extends StatelessWidget {
+class WeatherApp extends HookWidget {
   const WeatherApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    context.read<WeatherCubit>().fetchForecastWeather("Yangon");
+    final size = MediaQuery.of(context).size;
+    useEffect(() {
+      LocationService.shared.determinePosition().then((position) {
+        context.read<WeatherCubit>().fetchForecastWeather("${position.latitude},${position.longitude}");
+      });
 
-
+      return (){};
+    }, const []);
     return Scaffold(
-      body: Center(
-        child: BlocConsumer<WeatherCubit, WeatherState>(builder: (context, state){
-          switch (state.status) {
-            case WeatherStatus.initial:
-              return Container();
-            case WeatherStatus.loading:
-              return Center(child: CircularProgressIndicator(),);
-            case WeatherStatus.success:
-              return WeatherHome(forecastWeather: state.forecastWeather);
-            case WeatherStatus.failure:
-              return Center(child: Text("Failure"),);
-          }
-        }, listener: (context, state){}),
-      ),
+
+      body: BlocConsumer<WeatherCubit, WeatherState>(builder: (context, state){
+        switch (state.status) {
+          case WeatherStatus.initial:
+            return Container();
+          case WeatherStatus.loading:
+            return Center(child: CircularProgressIndicator(),);
+          case WeatherStatus.success:
+            return Stack(
+              children: [
+                Image.asset(backgroundAssets(state.forecastWeather!.current!.condition!.text!), fit: BoxFit.fill,width: size.width,height: size.height),
+                WeatherHome(forecastWeather: state.forecastWeather),
+              ],
+            );
+          case WeatherStatus.failure:
+            return Center(child: Text("Failure"),);
+        }
+      }, listener: (context, state){}),
     );
+  }
+
+  String backgroundAssets(String condition) {
+    final background = "assets/background";
+    switch (condition.toLowerCase()) {
+      case "sunny":
+        return "$background/sunny.jpg";
+      case "overcast":
+        return "$background/overcast.jpg";
+      case "sunny_cloudy":
+        return "$background/sunny_cloudy.jpg";
+      default:
+        return "$background/partly_cloudy.jpg";
+    }
   }
 }
