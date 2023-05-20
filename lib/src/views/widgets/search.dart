@@ -52,8 +52,12 @@ class CustomSearchDelegate extends SearchDelegate {
           switch (state.status) {
             case SearchWeatherStatus.initial:
               return Container();
+
             case SearchWeatherStatus.loading:
-              return Container();
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+
             case SearchWeatherStatus.success:
               if (state.searchResult!.isEmpty) {
                 return const Center(
@@ -65,7 +69,7 @@ class CustomSearchDelegate extends SearchDelegate {
                   itemBuilder: (context, index) {
                     final weather = state.searchResult![index];
                     return InkWell(
-                      onTap: (){
+                      onTap: () {
                         close(context, weather.name);
                       },
                       child: Padding(
@@ -73,8 +77,14 @@ class CustomSearchDelegate extends SearchDelegate {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(weather.name ?? "", style: const TextStyle(fontSize: 17),),
-                            Text("(${weather.region}, ${weather.country})", style: const TextStyle(fontSize: 14, color: Colors.grey),)
+                            Text(
+                              weather.name ?? "",
+                              style: const TextStyle(fontSize: 17),
+                            ),
+                            Text(
+                              "(${weather.region}, ${weather.country})",
+                              style: const TextStyle(fontSize: 14, color: Colors.grey),
+                            )
                           ],
                         ),
                       ),
@@ -89,6 +99,6 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Text(query);
+    return Container();
   }
 }

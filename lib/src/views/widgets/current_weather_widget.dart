@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_show/app_consts.dart';
@@ -17,7 +18,6 @@ class CurrentWeatherWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textController = TextEditingController();
     final size = MediaQuery.of(context).size;
     return NestedScrollView(
       headerSliverBuilder: (_, __) {
@@ -25,21 +25,40 @@ class CurrentWeatherWidget extends StatelessWidget {
           SliverAppBar(
             backgroundColor: Colors.transparent,
             actions: [
-              // AnimSearchBar(
-              //     width: size.width - 70,
-              //     textController: textController,
-              //     onSuffixTap: () {},
-              //     onSubmitted: (s) {},
-              //     color: Colors.transparent,),
-              IconButton(onPressed: (){
-                showSearch(context: context, delegate: CustomSearchDelegate()).then((value) {
-                  print("Search Value $value");
-                  if(value != null || value.isNotEmpty) {
-                    context.read<WeatherCubit>().fetchForecastWeather(value);
-                  }
-                });
-              }, icon: Icon(Icons.search)),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+              IconButton(
+                  onPressed: () {
+                    showSearch(context: context, delegate: CustomSearchDelegate()).then((value) {
+                      if (value != null) {
+                        context.read<WeatherCubit>().fetchForecastWeather(value);
+                      }
+                    });
+                  },
+                  icon: const Icon(Icons.search)),
+              PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                        child: _popupItem(
+                            label: "Setting", trailing: const Icon(CupertinoIcons.settings))),
+                    PopupMenuItem(
+                        child: _popupItem(
+                            label: "Celsius",
+                            trailing: const Text(
+                              " °C",
+                              style: TextStyle(fontSize: 17),
+                            ))),
+                    PopupMenuItem(
+                        child: _popupItem(
+                            label: "Fahrenheit",
+                            trailing: const Text(
+                              " °F",
+                              style: TextStyle(fontSize: 17),
+                            ))),
+                  ];
+                },
+                icon: const Icon(Icons.menu),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              )
             ],
             expandedHeight: 150,
             flexibleSpace: FlexibleSpaceBar(
@@ -87,27 +106,9 @@ class CurrentWeatherWidget extends StatelessWidget {
       },
       body: ListView(
         children: [
-          Text(currentWeather.current!.condition!.text ?? "",
-              style: const TextStyle(fontSize: 18), textAlign: TextAlign.center),
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3), borderRadius: BorderRadius.circular(8)),
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              children: [
-                _itemRow("Feels Like",
-                    currentWeather.current!.feelslikeC!.round().toStringAsFixed(0) + " °"),
-                _itemRow("Wind", currentWeather.current!.windKph!.round().toStringAsFixed(0)),
-                _itemRow("Visibility", currentWeather.current!.visKm.toString()),
-                _itemRow("Wind", currentWeather.current!.windKph!.round().toStringAsFixed(0)),
-                _itemRow("Humidity", "${currentWeather.current!.humidity} %"),
-                _itemRow("Pressure", currentWeather.current!.pressureMb.toString()),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
+          // const SizedBox(
+          //   height: 10,
+          // ),
           Container(
             height: 120,
             decoration: BoxDecoration(
@@ -137,37 +138,50 @@ class CurrentWeatherWidget extends StatelessWidget {
           ),
           Container(
             margin: const EdgeInsets.all(8.0),
-            height: 200,
             decoration: BoxDecoration(
                 color: Colors.grey.withOpacity(0.3), borderRadius: BorderRadius.circular(8)),
-            child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: currentWeather.forecast!.forecastday!.length,
-              itemBuilder: (context, index) {
-                final day = currentWeather.forecast!.forecastday![index];
-
-                return Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        dayFormat(day.date ?? ""),
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      Image.asset(
-                        "assets/day/${getIcon(day.day!.condition!.code!)}.png",
-                        width: 45,
-                        height: 45,
-                      ),
-                      const Spacer(),
-                      Text(
-                        "${day.day!.mintempC!.round()} / ${day.day!.maxtempC!.round()}",
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                );
-              },
+            child: Column(
+              children: currentWeather.forecast!.forecastday!.map((day) => Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Text(
+                      dayFormat(day.date ?? ""),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    Image.asset(
+                      "assets/day/${getIcon(day.day!.condition!.code!)}.png",
+                      width: 45,
+                      height: 45,
+                    ),
+                    const Spacer(),
+                    Text(
+                      "${day.day!.mintempC!.round()} / ${day.day!.maxtempC!.round()}",
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              )).toList(),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.3), borderRadius: BorderRadius.circular(8)),
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(currentWeather.current!.condition!.text ?? "",
+                    style: const TextStyle(fontSize: 20)),
+                SizedBox(height: 12),
+                _itemRow("Feels Like",
+                    currentWeather.current!.feelslikeC!.round().toStringAsFixed(0) + " °"),
+                _itemRow("Wind", currentWeather.current!.windKph!.round().toStringAsFixed(0)),
+                _itemRow("Visibility", currentWeather.current!.visKm.toString()),
+                _itemRow("Humidity", "${currentWeather.current!.humidity} %"),
+                _itemRow("Pressure", currentWeather.current!.pressureMb.toString()),
+              ],
             ),
           ),
         ],
@@ -180,7 +194,7 @@ class CurrentWeatherWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             label,
@@ -192,6 +206,19 @@ class CurrentWeatherWidget extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+
+  Widget _popupItem({required String label, Widget? trailing}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 17),
+        ),
+        trailing ?? Container()
+      ],
     );
   }
 }
