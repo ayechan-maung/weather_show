@@ -39,20 +39,26 @@ class CurrentWeatherWidget extends StatelessWidget {
                   return [
                     PopupMenuItem(
                         child: _popupItem(
-                            label: "Setting", trailing: const Icon(CupertinoIcons.settings))),
+                            label: "Admin", trailing: const Icon(CupertinoIcons.person_alt_circle))),
                     PopupMenuItem(
                         child: _popupItem(
                             label: "Celsius",
-                            trailing: const Text(
-                              " °C",
-                              style: TextStyle(fontSize: 17),
+                            trailing: const Padding(
+                              padding: EdgeInsets.only(right: 4.0),
+                              child: Text(
+                                " °C",
+                                style: TextStyle(fontSize: 17),
+                              ),
                             ))),
                     PopupMenuItem(
                         child: _popupItem(
                             label: "Fahrenheit",
-                            trailing: const Text(
-                              " °F",
-                              style: TextStyle(fontSize: 17),
+                            trailing: const Padding(
+                              padding: EdgeInsets.only(right: 4.0),
+                              child: const Text(
+                                " °F",
+                                style: TextStyle(fontSize: 17),
+                              ),
                             ))),
                   ];
                 },
@@ -109,6 +115,18 @@ class CurrentWeatherWidget extends StatelessWidget {
           // const SizedBox(
           //   height: 10,
           // ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: Row(
+              children: [
+                Icon(Icons.watch_later_outlined),
+                Text(
+                  "Hourly Forecast",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            ),
+          ),
           Container(
             height: 120,
             decoration: BoxDecoration(
@@ -131,7 +149,7 @@ class CurrentWeatherWidget extends StatelessWidget {
                 Icon(Icons.calendar_view_week),
                 Text(
                   "Three Days Forecast",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  style: TextStyle(fontSize: 20),
                 ),
               ],
             ),

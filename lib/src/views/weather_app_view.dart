@@ -1,12 +1,15 @@
 
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:weather_show/main.dart';
 import 'package:weather_show/src/service/location_service.dart';
 
 import '../bloc/weather_cubit.dart';
 import '../bloc/weather_state.dart';
+import '../service/messaging_service.dart';
 import 'weather_home.dart';
 
 class WeatherApp extends HookWidget {
@@ -16,6 +19,8 @@ class WeatherApp extends HookWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     useEffect(() {
+      FirebaseMessaging.onMessage.listen(showFlutterNotification);
+
       LocationService.shared.determinePosition().then((position) {
         context.read<WeatherCubit>().fetchForecastWeather("${position.latitude},${position.longitude}");
       });
