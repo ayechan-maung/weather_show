@@ -2,9 +2,6 @@ import 'package:dio/dio.dart';
 import '../../../app_consts.dart';
 import 'http_service.dart';
 
-/// Http service implementation using the Dio package
-///
-/// See https://pub.dev/packages/dio
 class DioHttpService implements HttpService {
   /// Creates new instance of [DioHttpService]
   DioHttpService(

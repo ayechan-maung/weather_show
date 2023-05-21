@@ -21,7 +21,9 @@ class AuthGate extends StatelessWidget {
               child: FirebaseUIActions(
                   actions: [
                     AuthStateChangeAction<SignedIn>((context, state) {
-                      debugPrint("State $state");
+                      if(state.user != null) {
+                        setupToken();
+                      }
                       if (!state.user!.emailVerified) {
                         // Navigator.pushNamed(context, '/verify-email');
                       } else {
@@ -29,26 +31,27 @@ class AuthGate extends StatelessWidget {
                       }
                     }),
                   ],
-                  child: LoginView(
-                    action: AuthAction.signIn,
-                    providers: FirebaseUIAuth.providersFor(FirebaseAuth.instance.app),
-                    subtitleBuilder: (context, action) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: action == AuthAction.signIn
-                            ? const Text('Welcome to Weather Show, please sign in!')
-                            : const Text('Welcome to Weather Show, please sign up!'),
-                      );
-                    },
-                    footerBuilder: (context, action) {
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 16),
-                        child: Text(
-                          'By signing in, you agree to our terms and conditions.',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      );
-                    },
+                  child: Center(
+                    child: LoginView(
+                      action: AuthAction.signIn,
+                      showAuthActionSwitch: false,
+                      providers: FirebaseUIAuth.providersFor(FirebaseAuth.instance.app),
+                      subtitleBuilder: (context, action) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text('Welcome to Weather Show admin, please sign in!')
+                        );
+                      },
+                      footerBuilder: (context, action) {
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: Text(
+                            'By signing in, you agree to our terms and conditions.',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        );
+                      },
+                    ),
                   )),
             );
           }
