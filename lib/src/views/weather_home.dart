@@ -7,7 +7,7 @@ import 'widgets/current_weather_widget.dart';
 import 'widgets/forecast_weather_widget.dart';
 
 class WeatherHome extends StatelessWidget {
-  final ForecastWeatherDataModel? forecastWeather;
+  final ForecastWeather? forecastWeather;
 
   const WeatherHome({Key? key, this.forecastWeather}) : super(key: key);
 
@@ -20,7 +20,7 @@ class WeatherHome extends StatelessWidget {
           backgroundColor: Colors.transparent,
           body: [
             CurrentWeatherWidget(forecastWeather!),
-            ForecastWeatherWidget(forecastWeather!.forecast!)
+            const ForecastWeatherWidget()
           ][state],
           bottomNavigationBar: BottomNavigationBar(backgroundColor: Colors.transparent,
             onTap: (index) {

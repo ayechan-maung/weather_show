@@ -1,72 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:weather_show/app_consts.dart';
+import 'package:weather_show/src/service/storage/fav_city_storage.dart';
 
 import '../../model/forecast_weather_data_model.dart';
 
 class ForecastWeatherWidget extends StatelessWidget {
-  final Forecast forecastWeather;
-
-  const ForecastWeatherWidget(this.forecastWeather, {Key? key}) : super(key: key);
+  const ForecastWeatherWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: 120,
-          margin: const EdgeInsets.symmetric(horizontal: 8),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: forecastWeather.forecastday![0].hour!.length,
-            itemBuilder: (context, index) {
-              final item = forecastWeather.forecastday![0].hour![index];
-              return hourForecast(item);
-            },
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: forecastWeather.forecastday!.length,
-            itemBuilder: (context, index) {
-              final day = forecastWeather.forecastday![index];
-
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Text(dayFormat(day.date ?? "")),
-                    const Spacer(),
-                    Text("${day.day!.maxtempC!.round()} / ${day.day!.mintempC!.round()}"),
-                  ],
-                ),
+    return Scaffold(
+      body: FutureBuilder(
+          future: FavCityStorage.instance.getAllWeather(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<ForecastWeather> cities = snapshot.requireData;
+              if (cities.isEmpty) {
+                return const Center(child: Text('🏙️', style: TextStyle(fontSize: 64)));
+              }
+              return ListView.builder(
+                itemCount: cities.length,
+                itemBuilder: (context, index) {
+                  return FavCityWidget(location: cities[index].location,current: cities[index].current);
+                  return Column(
+                    children: [
+                      Text(cities[index].location!.name ?? ""),
+                      Text(cities[index].current!.tempC.toString()),
+                      // Text(cities[index].current!.condition!.text.toString()),
+                    ],
+                  );
+                },
               );
-            },
-          ),
-        )
-      ],
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
     );
   }
+}
 
-  Widget dayForecast(Day day) {
-    return Container();
-  }
+class FavCityWidget extends StatelessWidget {
+  final Location? location;
+  final Current? current;
 
-  Widget hourForecast(Hour hour) {
-    final sty = TextStyle(fontWeight: FontWeight.bold, fontSize: 17);
+  const FavCityWidget({Key? key, this.location, this.current}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
         children: [
-          Text(
-            twelveHrFormat(hour.time ?? ""),
-            style: sty,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                location?.name ?? "",
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Text("(${location?.region}, ${location?.country})")
+            ],
           ),
+          const Spacer(),
+          // Image.asset(
+          //   "assets/day/${getIcon(current!.condition!.code!)}.png",
+          //   width: 45,
+          //   height: 45,
+          // ),
+
           Text(
-            "${hour.tempC!.round()} °",
-            style: sty,
-          )
+            "${current!.tempC!.round()} °C",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );

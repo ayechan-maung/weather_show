@@ -10,10 +10,11 @@ import 'package:weather_show/src/model/forecast_weather_data_model.dart';
 import 'package:weather_show/src/utilities/extensions.dart';
 import 'package:weather_show/src/views/widgets/search.dart';
 
+import '../../service/storage/fav_city_storage.dart';
 import 'hour_forecast.dart';
 
 class CurrentWeatherWidget extends StatelessWidget {
-  final ForecastWeatherDataModel currentWeather;
+  final ForecastWeather currentWeather;
 
   CurrentWeatherWidget(this.currentWeather, {Key? key}) : super(key: key);
 
@@ -26,6 +27,11 @@ class CurrentWeatherWidget extends StatelessWidget {
           SliverAppBar(
             backgroundColor: Colors.transparent,
             actions: [
+              IconButton(
+                  onPressed: () async{
+                    await FavCityStorage.instance.addCityWeather(currentWeather);
+                  },
+                  icon: const Icon(Icons.favorite_border_rounded)),
               IconButton(
                   onPressed: () {
                     showSearch(context: context, delegate: CustomSearchDelegate()).then((value) {

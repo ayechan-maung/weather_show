@@ -15,6 +15,7 @@ import '../bloc/weather_cubit.dart';
 import '../bloc/weather_state.dart';
 import '../service/messaging_service/messaging_service.dart';
 import 'weather_home.dart';
+import 'widgets/weather_fail_widget.dart';
 
 
 Future<void> setupToken() async {
@@ -34,12 +35,14 @@ class WeatherApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    var location = useState('');
     useEffect(() {
       FirebaseMessaging.onMessage.listen(messagingService.showFlutterNotification);
 
       setupToken();
 
       LocationService.shared.determinePosition().then((position) {
+        location.value = "${position.latitude},${position.longitude}";
         context
             .read<WeatherCubit>()
             .fetchForecastWeather("${position.latitude},${position.longitude}");
@@ -64,9 +67,11 @@ class WeatherApp extends HookWidget {
                   ],
                 );
               case WeatherStatus.failure:
-                return Center(
-                  child: Text("Failure"),
-                );
+                return WeatherFailWidget(tryAgain:(){
+                  context
+                      .read<WeatherCubit>()
+                      .fetchForecastWeather(location.value);
+                });
             }
           },
           listener: (context, state) {}),

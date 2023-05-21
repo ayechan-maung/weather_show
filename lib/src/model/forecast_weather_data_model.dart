@@ -100,14 +100,14 @@ String getIcon(int code) {
 }
 
 
-class ForecastWeatherDataModel {
+class ForecastWeather {
   Location? location;
   Current? current;
   Forecast? forecast;
 
-  ForecastWeatherDataModel({this.location, this.current, this.forecast});
+  ForecastWeather({this.location, this.current, this.forecast});
 
-  ForecastWeatherDataModel.fromJson(Map<String, dynamic> json) {
+  ForecastWeather.fromJson(Map<String, dynamic> json) {
     location = json['location'] != null
         ? new Location.fromJson(json['location'])
         : null;
@@ -148,6 +148,19 @@ class Location {
     tzId = json['tz_id'];
     localtimeEpoch = json['localtime_epoch'];
     localtime = json['localtime'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['region'] = this.region;
+    data['country'] = this.country;
+    data['lat'] = this.lat;
+    data['lon'] = this.lon;
+    data['tz_id'] = this.tzId;
+    data['localtime_epoch'] = this.localtimeEpoch;
+    data['localtime'] = this.localtime;
+    return data;
   }
 }
 
@@ -228,7 +241,34 @@ class Current {
     gustMph = json['gust_mph'];
     gustKph = json['gust_kph'];
   }
-
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['last_updated_epoch'] = this.lastUpdatedEpoch;
+    data['last_updated'] = this.lastUpdated;
+    data['temp_c'] = this.tempC;
+    data['temp_f'] = this.tempF;
+    data['is_day'] = this.isDay;
+    // if (this.condition != null) {
+    //   data['condition'] = this.condition!.toJson();
+    // }
+    data['condition_text'] = this.condition?.text;
+    data['condition_icon'] = this.condition?.icon;
+    data['condition_code'] = this.condition?.code;
+    data['wind_mph'] = this.windMph;
+    data['wind_kph'] = this.windKph;
+    data['wind_degree'] = this.windDegree;
+    data['wind_dir'] = this.windDir;
+    data['pressure_mb'] = this.pressureMb;
+    data['pressure_in'] = this.pressureIn;
+    data['humidity'] = this.humidity;
+    data['cloud'] = this.cloud;
+    data['feelslike_c'] = this.feelslikeC;
+    data['feelslike_f'] = this.feelslikeF;
+    data['vis_km'] = this.visKm;
+    data['vis_miles'] = this.visMiles;
+    data['uv'] = this.uv;
+    return data;
+  }
 }
 
 class Condition {
@@ -243,7 +283,13 @@ class Condition {
     icon = json['icon'];
     code = json['code'];
   }
-
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['text'] = this.text;
+    data['icon'] = this.icon;
+    data['code'] = this.code;
+    return data;
+  }
 }
 
 class Forecast {
@@ -258,6 +304,14 @@ class Forecast {
         forecastday!.add(new Forecastday.fromJson(v));
       });
     }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.forecastday != null) {
+      data['forecastday'] = this.forecastday!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }
 
@@ -281,6 +335,22 @@ class Forecastday {
         hour!.add(new Hour.fromJson(v));
       });
     }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['date'] = this.date;
+    data['date_epoch'] = this.dateEpoch;
+    if (this.day != null) {
+      data['day'] = this.day!.toJson();
+    }
+    if (this.astro != null) {
+      data['astro'] = this.astro!.toJson();
+    }
+    if (this.hour != null) {
+      data['hour'] = this.hour!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }
 
@@ -352,6 +422,28 @@ class Day {
         : null;
     uv = json['uv'];
   }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['maxtemp_c'] = this.maxtempC;
+    data['maxtemp_f'] = this.maxtempF;
+    data['mintemp_c'] = this.mintempC;
+    data['mintemp_f'] = this.mintempF;
+    data['avgtemp_c'] = this.avgtempC;
+    data['avgtemp_f'] = this.avgtempF;
+    data['maxwind_mph'] = this.maxwindMph;
+    data['maxwind_kph'] = this.maxwindKph;
+    data['totalsnow_cm'] = this.totalsnowCm;
+    data['daily_will_it_rain'] = this.dailyWillItRain;
+    data['daily_chance_of_rain'] = this.dailyChanceOfRain;
+    data['daily_will_it_snow'] = this.dailyWillItSnow;
+    data['daily_chance_of_snow'] = this.dailyChanceOfSnow;
+    if (this.condition != null) {
+      data['condition'] = this.condition!.toJson();
+    }
+    data['uv'] = this.uv;
+    return data;
+  }
 }
 
 class Astro {
@@ -385,6 +477,18 @@ class Astro {
     isSunUp = json['is_sun_up'];
   }
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['sunrise'] = this.sunrise;
+    data['sunset'] = this.sunset;
+    data['moonrise'] = this.moonrise;
+    data['moonset'] = this.moonset;
+    data['moon_phase'] = this.moonPhase;
+    data['moon_illumination'] = this.moonIllumination;
+    data['is_moon_up'] = this.isMoonUp;
+    data['is_sun_up'] = this.isSunUp;
+    return data;
+  }
 }
 
 class Hour {
@@ -493,5 +597,40 @@ class Hour {
     gustMph = json['gust_mph'];
     gustKph = json['gust_kph'];
     uv = json['uv'];
+  }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['time_epoch'] = this.timeEpoch;
+    data['time'] = this.time;
+    data['temp_c'] = this.tempC;
+    data['temp_f'] = this.tempF;
+    data['is_day'] = this.isDay;
+    if (this.condition != null) {
+      data['condition'] = this.condition!.toJson();
+    }
+    data['wind_mph'] = this.windMph;
+    data['wind_kph'] = this.windKph;
+    data['wind_degree'] = this.windDegree;
+    data['wind_dir'] = this.windDir;
+    data['pressure_mb'] = this.pressureMb;
+    data['pressure_in'] = this.pressureIn;
+    data['humidity'] = this.humidity;
+    data['cloud'] = this.cloud;
+    data['feelslike_c'] = this.feelslikeC;
+    data['feelslike_f'] = this.feelslikeF;
+    data['windchill_c'] = this.windchillC;
+    data['windchill_f'] = this.windchillF;
+    data['heatindex_c'] = this.heatindexC;
+    data['heatindex_f'] = this.heatindexF;
+    data['dewpoint_c'] = this.dewpointC;
+    data['dewpoint_f'] = this.dewpointF;
+    data['will_it_rain'] = this.willItRain;
+    data['chance_of_rain'] = this.chanceOfRain;
+    data['will_it_snow'] = this.willItSnow;
+    data['chance_of_snow'] = this.chanceOfSnow;
+    data['vis_km'] = this.visKm;
+    data['vis_miles'] = this.visMiles;
+    data['uv'] = this.uv;
+    return data;
   }
 }

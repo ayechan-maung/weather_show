@@ -6,10 +6,10 @@ enum WeatherStatus { initial, loading, success, failure }
 class WeatherState {
   final WeatherStatus status;
   // final CurrentWeatherDataModel? currentWeather;
-  final ForecastWeatherDataModel? forecastWeather;
+  final ForecastWeather? forecastWeather;
   WeatherState({this.status = WeatherStatus.initial, this.forecastWeather});
 
-  WeatherState copyWith({WeatherStatus? status, ForecastWeatherDataModel? forecastWeather}) {
+  WeatherState copyWith({WeatherStatus? status, ForecastWeather? forecastWeather}) {
     return WeatherState(status: status ?? this.status, forecastWeather: forecastWeather ?? this.forecastWeather);
   }
 }

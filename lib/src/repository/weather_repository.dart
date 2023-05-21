@@ -6,5 +6,5 @@ abstract class WeatherRepository {
   Future<CurrentWeatherDataModel> getCurrentWeather(
       {required String endPoint, required String? city});
 
-  Future<ForecastWeatherDataModel> getForecastWeather(String? city);
+  Future<ForecastWeather> getForecastWeather(String? city);
 }

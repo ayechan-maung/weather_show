@@ -21,10 +21,10 @@ class HttpWeatherRepository extends WeatherRepository {
   }
 
   @override
-  Future<ForecastWeatherDataModel> getForecastWeather(String? city) async{
+  Future<ForecastWeather> getForecastWeather(String? city) async{
     final response = await httpService
         .get("forecast.json", queryParameters: {'q': city, 'key': API_KEY, 'days': 3});
     debugPrint("Response:: $response");
-    return ForecastWeatherDataModel.fromJson(response);
+    return ForecastWeather.fromJson(response);
   }
 }
