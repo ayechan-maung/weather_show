@@ -39,4 +39,9 @@ class FavDbCubit extends Cubit<FavDbState> {
     emit(state.copyWith(status: FavDBStatus.success, weathers: results));
   }
 
+  Future<void> getCityDetail(int id) async {
+    emit(state.copyWith(status: FavDBStatus.loading));
+    final result = await dbRepository.getCityDetail(id);
+    emit(state.copyWith(status: FavDBStatus.success, weather: result));
+  }
 }

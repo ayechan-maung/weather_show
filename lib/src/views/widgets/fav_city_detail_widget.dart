@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_show/app_consts.dart';
-import 'package:weather_show/src/bloc/db_bloc/fav_db_cubit.dart';
-import 'package:weather_show/src/model/forecast_weather_data_model.dart';
 import 'package:weather_show/src/utilities/extensions.dart';
-import 'package:weather_show/src/views/widgets/card_item.dart';
 
-import '../../service/storage/fav_city_storage.dart';
-import 'hour_forecast.dart';
+import '../../bloc/db_bloc/fav_db_cubit.dart';
+import '../../model/forecast_weather_data_model.dart';
 
-
-class SearchDetailWidget extends StatelessWidget {
+class FavCityDetailWidget extends StatelessWidget {
   final ForecastWeather currentWeather;
 
-  SearchDetailWidget(this.currentWeather, {Key? key}) : super(key: key);
+  FavCityDetailWidget(this.currentWeather, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

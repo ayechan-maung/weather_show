@@ -6,6 +6,7 @@ import 'package:weather_show/src/service/storage/fav_city_storage.dart';
 import 'package:weather_show/src/views/widgets/card_item.dart';
 
 import '../../model/forecast_weather_data_model.dart';
+import '../fav_city_detail_view.dart';
 
 class FavoriteWeatherWidget extends HookWidget {
   const FavoriteWeatherWidget();
@@ -47,7 +48,6 @@ class FavoriteWeatherWidget extends HookWidget {
               return Dismissible(
                 key: Key(item.location!.name!),
                 onDismissed: (dir) {
-                  print(dir);
                   FavCityStorage.instance.deleteWeather(item.location!.id!);
                 },
                 child: FavCityWidget(location: item.location, current: item.current),
@@ -72,37 +72,42 @@ class FavCityWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const fontSty = TextStyle(color: Colors.white);
-    return CardItem(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
-      margin: const EdgeInsets.all(8),
-      color: Colors.white.withOpacity(0.4),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                location?.name ?? "",
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              Text(
-                "(${location?.region}, ${location?.country})",
-                style: fontSty,
-              )
-            ],
-          ),
-          const Spacer(),
-          Image.asset(
-            "assets/day/${getIcon(current!.conditionCode ?? 1000)}.png",
-            width: 45,
-            height: 45,
-          ),
-          Text(
-            "${current!.tempC!.round()} °C",
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-        ],
+    return InkWell(
+      onTap: (){
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> FavCityDetailView(id: location!.id!)));
+      },
+      child: CardItem(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+        margin: const EdgeInsets.all(8),
+        color: Colors.white.withOpacity(0.4),
+        child: Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  location?.name ?? "",
+                  style:
+                      const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                Text(
+                  "(${location?.region}, ${location?.country})",
+                  style: fontSty,
+                )
+              ],
+            ),
+            const Spacer(),
+            Image.asset(
+              "assets/day/${getIcon(current!.conditionCode ?? 1000)}.png",
+              width: 45,
+              height: 45,
+            ),
+            Text(
+              "${current!.tempC!.round()} °C",
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+          ],
+        ),
       ),
     );
   }
