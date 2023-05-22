@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_show/src/auth/auth_gate.dart';
 import 'package:weather_show/src/bloc/index_cubit.dart';
 
 import '../model/forecast_weather_data_model.dart';
 import 'widgets/current_weather_widget.dart';
 import 'widgets/fav_weather_widget.dart';
+import 'widgets/forecast_weather_widget.dart';
 
 class WeatherHome extends StatelessWidget {
   final ForecastWeather? forecastWeather;
@@ -20,7 +22,9 @@ class WeatherHome extends StatelessWidget {
           backgroundColor: Colors.transparent,
           body: [
             CurrentWeatherWidget(forecastWeather!),
-            const FavoriteWeatherWidget()
+            ForecastWeatherWidget(forecastDays: forecastWeather!.forecast!.forecastday!),
+            const FavoriteWeatherWidget(),
+            const AuthGate(),
           ][state],
           bottomNavigationBar: NavigationBar(
             backgroundColor: Colors.transparent,
@@ -35,11 +39,20 @@ class WeatherHome extends StatelessWidget {
                 label: 'Today',
               ),
               NavigationDestination(
+                selectedIcon: Icon(Icons.cloud_circle_rounded),
+                icon: Icon(Icons.cloud_circle_outlined),
+                label: 'Forecast',
+              ),
+              NavigationDestination(
                 selectedIcon: Icon(Icons.favorite),
                 icon: Icon(Icons.favorite_border_rounded),
                 label: 'Favorite',
               ),
-
+              NavigationDestination(
+                selectedIcon: Icon(Icons.person),
+                icon: Icon(Icons.person_outline_rounded),
+                label: 'Admin',
+              ),
             ],
           ),
         );

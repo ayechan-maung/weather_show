@@ -20,3 +20,9 @@ String dayFormat(String date) {
 
   return dayFormat;
 }
+
+String dateFormat(String date) {
+  final dateFormat = DateFormat.EEEE().add_MMMMd().format(DateTime.parse(date));
+
+  return dateFormat;
+}
