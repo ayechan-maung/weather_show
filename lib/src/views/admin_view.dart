@@ -13,9 +13,7 @@ class AdminView extends HookWidget {
   Widget build(BuildContext context) {
     var titleController = useTextEditingController();
     var messageController = useTextEditingController();
-    useEffect(() {
-      return () {};
-    }, const []);
+    var isLoading = useState(false);
 
     return Scaffold(
       appBar: AppBar(
@@ -43,64 +41,74 @@ class AdminView extends HookWidget {
               icon: const Icon(CupertinoIcons.profile_circled))
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            TextFormField(
-              validator: (text){
-                if(text!.isEmpty) {
-                  return 'Title field is required';
-                }
-                return null;
-              },
-              controller: titleController,
-              decoration: const InputDecoration(
-                label: Text('Title')
-              ),
+      body: Stack(
+        children: [
+          Form(
+            key: _formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                TextFormField(
+                  validator: (text){
+                    if(text!.isEmpty) {
+                      return 'Title field is required';
+                    }
+                    return null;
+                  },
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    label: Text('Title')
+                  ),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                TextFormField(
+                  validator: (text){
+                    if(text!.isEmpty) {
+                      return 'Body field is required';
+                    }
+                    return null;
+                  },
+                  controller: messageController,
+                  decoration: const InputDecoration(
+                      label: Text('Body')
+                  ),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                OutlinedButton(
+                  onPressed: () async {
+                    if(!_formKey.currentState!.validate()) {
+                      return;
+                    } else {
+                      isLoading.value = true;
+                      List<String?> tokens = await firebaseStoreService.getUsersToken();
+                      Map<String, dynamic> sendBody = {};
+                      Map<String, dynamic> notification = {};
+                      // notification
+                      notification['title'] = titleController.text;
+                      notification['body'] = messageController.text;
+                      // body
+                      sendBody['registration_ids'] = tokens;
+                      sendBody['direct_boot_ok'] = true;
+                      sendBody['notification'] = notification;
+                      debugPrint("body $sendBody");
+                      pushMessage.sendPushMessage(jsonEncode(sendBody));
+                      isLoading.value = false;
+                    }
+                  },
+                  child: const Text("Send Notifications"),
+                )
+              ],
             ),
-            const SizedBox(
-              height: 12,
-            ),
-            TextFormField(
-              validator: (text){
-                if(text!.isEmpty) {
-                  return 'Body field is required';
-                }
-                return null;
-              },
-              controller: messageController,
-              decoration: const InputDecoration(
-                  label: Text('Body')
-              ),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            TextButton(
-              onPressed: () async {
-                if(!_formKey.currentState!.validate()) {
-                  return;
-                } else {
-                  List<String?> tokens = await firebaseStoreService.getUsersToken();
-                  Map<String, dynamic> sendBody = {};
-                  Map<String, dynamic> notification = {};
-                  // notification
-                  notification['title'] = titleController.text;
-                  notification['body'] = messageController.text;
-                  // body
-                  sendBody['registration_ids'] = tokens;
-                  sendBody['direct_boot_ok'] = true;
-                  sendBody['notification'] = notification;
-                  debugPrint("body $sendBody");
-                  pushMessage.sendPushMessage(jsonEncode(sendBody));
-                }
-              },
-              child: const Text("Send Notifications"),
-            )
-          ],
-        ),
+          ),
+          if(isLoading.value)
+          const Align(
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator())
+        ],
       ),
     );
   }

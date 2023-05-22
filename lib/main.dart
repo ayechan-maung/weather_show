@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
+import 'package:weather_show/color_schemes.dart';
 import 'package:weather_show/src/bloc/index_cubit.dart';
 import 'package:weather_show/src/bloc/search_weather_cubit.dart';
 import 'package:weather_show/src/repository/search_weather_repo.dart';
@@ -84,10 +85,8 @@ class MyWeatherApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Weather',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme, fontFamily: 'Open Sans'),
+        darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme, fontFamily: 'Open Sans'),
         home: const WeatherApp(),
       ),
     );
