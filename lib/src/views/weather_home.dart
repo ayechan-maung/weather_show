@@ -32,6 +32,7 @@ class WeatherHome extends StatelessWidget {
               context.read<IndexCubit>().changeIndex(index);
             },
             selectedIndex: state,
+            animationDuration: Duration(milliseconds: 200),
             destinations: const <NavigationDestination>[
               NavigationDestination(
                 selectedIcon: Icon(Icons.today),

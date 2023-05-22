@@ -74,7 +74,7 @@ class SearchDetailView extends HookWidget {
       case "cloudy":
         return "assets/night_bg/heavy_cloudy.jpg";
       case "partly cloudy":
-        return "$background/partly_cloudy.jpg";
+        return "$background/sunny_cloudy.jpg";
       default:
         return "$background/cloudy.jpg";
     }

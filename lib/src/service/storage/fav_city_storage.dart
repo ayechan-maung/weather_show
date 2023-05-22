@@ -37,26 +37,26 @@ class FavCityStorage implements StorageService {
       await txn.insert("current_weather", {'location_id': locationId, ...currentL!.toJson()});
 
       // Insert forecast data
-      final forecastData = forecast!.forecastday!;
-      for (final forecastDay in forecastData) {
-        // Insert daily forecast data
-        final dailyForecastData = forecastDay.day;
-        final dailyForecastRow = {
-          'location_id': locationId,
-          ...dailyForecastData!.toJson(),
-        };
-        final dailyForecastId = await txn.insert('daily_forecasts', dailyForecastRow);
-
-        // Insert hourly forecast data
-        final hourlyForecastData = forecastDay.hour;
-        for (final hourlyForecast in hourlyForecastData!) {
-          final hourlyForecastRow = {
-            'daily_forecast_id': dailyForecastId,
-            ...hourlyForecast.toJson(),
-          };
-          await txn.insert('hourly_forecasts', hourlyForecastRow);
-        }
-      }
+      // final forecastData = forecast!.forecastday!;
+      // for (final forecastDay in forecastData) {
+      //   // Insert daily forecast data
+      //   final dailyForecastData = forecastDay.day;
+      //   final dailyForecastRow = {
+      //     'location_id': locationId,
+      //     ...dailyForecastData!.toJson(),
+      //   };
+      //   final dailyForecastId = await txn.insert('daily_forecasts', dailyForecastRow);
+      //
+      //   // Insert hourly forecast data
+      //   final hourlyForecastData = forecastDay.hour;
+      //   for (final hourlyForecast in hourlyForecastData!) {
+      //     final hourlyForecastRow = {
+      //       'daily_forecast_id': dailyForecastId,
+      //       ...hourlyForecast.toJson(),
+      //     };
+      //     await txn.insert('hourly_forecasts', hourlyForecastRow);
+      //   }
+      // }
     });
 
     print("City ${city.current}");
@@ -77,56 +77,39 @@ class FavCityStorage implements StorageService {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getAllWeather() async {
+  Future<List<ForecastWeather>> getAllWeather() async {
     final db = await instance.database;
-    // final result = await db.query(tableLocation);
-    // final List<ForecastWeather> weathers = [];
-    final query = '''
-      SELECT * FROM locations
-      INNER JOIN current_weather ON locations.id = current_weather.location_id
-      INNER JOIN daily_forecasts ON locations.id = daily_forecasts.location_id
-      INNER JOIN hourly_forecasts ON daily_forecasts.id = hourly_forecasts.daily_forecast_id
-    ''';
-    final raw = await db.rawQuery(query);
-    // final result =  raw.map((json) {
-    //
-    //
-    //   // print(json['name']);
-    //   final location = Location(
-    //     name: json['name'] as String,
-    //     region: json['region'] as String,
-    //     country: json['country'] as String,
-    //   );
-    //   final current = Current(
-    //     isDay: json['is_day'] as int
-    //   );
-    //   final weather = ForecastWeather(
-    //       location: location,
-    //     current: current
-    //   );
-    //   return weather;
-    // }).toList();
-    return raw;
+    final result = await db.query("locations");
+    // return result;
+    final List<ForecastWeather> weathers = [];
+    // final query = '''
+    //   SELECT * FROM locations
+    //   INNER JOIN current_weather ON locations.id = current_weather.location_id
+    //   INNER JOIN daily_forecasts ON locations.id = daily_forecasts.location_id
+    //   INNER JOIN hourly_forecasts ON daily_forecasts.id = hourly_forecasts.daily_forecast_id
+    // ''';
+    // final raw = await db.rawQuery(query);
+    // return raw;
     // print("result $result");
 
-    // for (final weather in result) {
-    //   final locationId = weather['id'] as int;
-    //
-    //   final currentWeather =
-    //       await db.query(tableCurrent, where: 'location_id =?', whereArgs: [locationId]);
-    //   // final currentCondition = await db.query(tableCondition, where: 'location_id =?', whereArgs: [locationId]);
-    //
-    //   print("Current $currentWeather");
-    //
-    //   final weatherData = ForecastWeather(
-    //     location: Location.fromJson(weather),
-    //     current: currentWeather.isNotEmpty ? Current.fromJson(currentWeather.first) : null,
-    //   );
-    //   weathers.add(weatherData);
-    // }
+    for (final weather in result) {
+      final locationId = weather['id'] as int;
+
+      final currentWeather =
+          await db.query('current_weather', where: 'location_id =?', whereArgs: [locationId]);
+      // final currentCondition = await db.query(tableCondition, where: 'location_id =?', whereArgs: [locationId]);
+
+      print("Current $currentWeather");
+
+      final weatherData = ForecastWeather(
+        location: Location.fromJson(weather),
+        current: currentWeather.isNotEmpty ? Current.fromJson(currentWeather.first) : null,
+      );
+      weathers.add(weatherData);
+    }
     //
     // // close();
-    // return weathers;
+    return weathers;
     // return result.map((e) => ForecastWeather.fromJson(e)).toList();
   }
 
@@ -169,7 +152,6 @@ class FavCityStorage implements StorageService {
             temp_f REAL,
             is_day INTEGER,
             condition_text TEXT,
-            condition_icon TEXT,
             condition_code INTEGER,
             wind_mph REAL,
             wind_kph REAL,
@@ -188,71 +170,71 @@ class FavCityStorage implements StorageService {
           )
         ''');
 
-    await db.execute('''
-          CREATE TABLE daily_forecasts (
-            id INTEGER PRIMARY KEY,
-            location_id INTEGER,
-            date TEXT,
-            date_epoch INTEGER,
-            maxtemp_c REAL,
-            maxtemp_f REAL,
-            mintemp_c REAL,
-            mintemp_f REAL,
-            avgtemp_c REAL,
-            avgtemp_f REAL,
-            maxwind_mph REAL,
-            maxwind_kph REAL,
-            totalsnow_cm REAL,
-            avghumidity REAL,
-            daily_will_it_rain INTEGER,
-            daily_chance_of_rain INTEGER,
-            daily_will_it_snow INTEGER,
-            daily_chance_of_snow INTEGER,
-            condition_text TEXT,
-            condition_icon TEXT,
-            condition_code INTEGER,
-            uv REAL,
-            FOREIGN KEY (location_id) REFERENCES locations (id)
-          )
-        ''');
-
-    await db.execute('''
-          CREATE TABLE hourly_forecasts (
-            id INTEGER PRIMARY KEY,
-            daily_forecast_id INTEGER,
-            time_epoch INTEGER,
-            time TEXT,
-            temp_c REAL,
-            temp_f REAL,
-            is_day INTEGER,
-            condition_text TEXT,
-            condition_icon TEXT,
-            condition_code INTEGER,
-            wind_mph REAL,
-            wind_kph REAL,
-            wind_degree INTEGER,
-            wind_dir TEXT,
-            pressure_mb REAL,
-            pressure_in REAL,
-            humidity INTEGER,
-            cloud INTEGER,
-            feelslike_c REAL,
-            feelslike_f REAL,
-            windchill_c REAL,
-            windchill_f REAL,
-            heatindex_c REAL,
-            heatindex_f REAL,
-            dewpoint_c REAL,
-            dewpoint_f REAL,
-            will_it_rain INTEGER,
-            chance_of_rain INTEGER,
-            will_it_snow INTEGER,
-            chance_of_snow INTEGER,
-            vis_km REAL,
-            vis_miles REAL,
-            FOREIGN KEY (daily_forecast_id) REFERENCES daily_forecasts (id)
-          )
-        ''');
+    // await db.execute('''
+    //       CREATE TABLE daily_forecasts (
+    //         id INTEGER PRIMARY KEY,
+    //         location_id INTEGER,
+    //         date TEXT,
+    //         date_epoch INTEGER,
+    //         maxtemp_c REAL,
+    //         maxtemp_f REAL,
+    //         mintemp_c REAL,
+    //         mintemp_f REAL,
+    //         avgtemp_c REAL,
+    //         avgtemp_f REAL,
+    //         maxwind_mph REAL,
+    //         maxwind_kph REAL,
+    //         totalsnow_cm REAL,
+    //         avghumidity REAL,
+    //         daily_will_it_rain INTEGER,
+    //         daily_chance_of_rain INTEGER,
+    //         daily_will_it_snow INTEGER,
+    //         daily_chance_of_snow INTEGER,
+    //         condition_text TEXT,
+    //         condition_icon TEXT,
+    //         condition_code INTEGER,
+    //         uv REAL,
+    //         FOREIGN KEY (location_id) REFERENCES locations (id)
+    //       )
+    //     ''');
+    //
+    // await db.execute('''
+    //       CREATE TABLE hourly_forecasts (
+    //         id INTEGER PRIMARY KEY,
+    //         daily_forecast_id INTEGER,
+    //         time_epoch INTEGER,
+    //         time TEXT,
+    //         temp_c REAL,
+    //         temp_f REAL,
+    //         is_day INTEGER,
+    //         condition_text TEXT,
+    //         condition_icon TEXT,
+    //         condition_code INTEGER,
+    //         wind_mph REAL,
+    //         wind_kph REAL,
+    //         wind_degree INTEGER,
+    //         wind_dir TEXT,
+    //         pressure_mb REAL,
+    //         pressure_in REAL,
+    //         humidity INTEGER,
+    //         cloud INTEGER,
+    //         feelslike_c REAL,
+    //         feelslike_f REAL,
+    //         windchill_c REAL,
+    //         windchill_f REAL,
+    //         heatindex_c REAL,
+    //         heatindex_f REAL,
+    //         dewpoint_c REAL,
+    //         dewpoint_f REAL,
+    //         will_it_rain INTEGER,
+    //         chance_of_rain INTEGER,
+    //         will_it_snow INTEGER,
+    //         chance_of_snow INTEGER,
+    //         vis_km REAL,
+    //         vis_miles REAL,
+    //         FOREIGN KEY (daily_forecast_id) REFERENCES daily_forecasts (id)
+    //       )
+    //     ''');
     // await db.execute('''
     //   CREATE TABLE $tableLocation (
     //     'id' INTEGER PRIMARY KEY AUTOINCREMENT,

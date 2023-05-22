@@ -173,6 +173,8 @@ class Current {
   double? tempF;
   int? isDay;
   Condition? condition;
+  String? conditionText;
+  int? conditionCode;
   double? windMph;
   double? windKph;
   int? windDegree;
@@ -198,6 +200,8 @@ class Current {
         this.tempF,
         this.isDay,
         this.condition,
+        this.conditionCode,
+        this.conditionText,
         this.windMph,
         this.windKph,
         this.windDegree,
@@ -253,9 +257,8 @@ class Current {
     // if (this.condition != null) {
     //   data['condition'] = this.condition!.toJson();
     // }
-    data['condition_text'] = this.condition?.text;
-    data['condition_icon'] = this.condition?.icon;
-    data['condition_code'] = this.condition?.code;
+    data['condition_text'] = this.conditionText;
+    data['condition_code'] = this.conditionCode;
     data['wind_mph'] = this.windMph;
     data['wind_kph'] = this.windKph;
     data['wind_degree'] = this.windDegree;
