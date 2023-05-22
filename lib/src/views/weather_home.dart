@@ -22,16 +22,37 @@ class WeatherHome extends StatelessWidget {
             CurrentWeatherWidget(forecastWeather!),
             const ForecastWeatherWidget()
           ][state],
-          bottomNavigationBar: BottomNavigationBar(backgroundColor: Colors.transparent,
-            onTap: (index) {
+          bottomNavigationBar: NavigationBar(
+            backgroundColor: Colors.transparent,
+            onDestinationSelected: (int index) {
               context.read<IndexCubit>().changeIndex(index);
             },
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.today), label: "Today"),
-              BottomNavigationBarItem(icon: Icon(Icons.cloud_circle_rounded), label: "Forecast"),
+            selectedIndex: state,
+            destinations: const <NavigationDestination>[
+              NavigationDestination(
+                selectedIcon: Icon(Icons.today),
+                icon: Icon(Icons.today_rounded),
+                label: 'Today',
+              ),
+              NavigationDestination(
+                selectedIcon: Icon(Icons.favorite),
+                icon: Icon(Icons.favorite_border_rounded),
+                label: 'Favorite',
+              ),
+
             ],
           ),
         );
+          // bottomNavigationBar: BottomNavigationBar(backgroundColor: Colors.transparent,
+          //   onTap: (index) {
+          //     context.read<IndexCubit>().changeIndex(index);
+          //   },
+          //   items: const [
+          //     BottomNavigationBarItem(icon: Icon(Icons.today), label: "Today"),
+          //     BottomNavigationBarItem(icon: Icon(Icons.cloud_circle_rounded), label: "Forecast"),
+          //   ],
+          // ),
+        // );
       },
     );
   }

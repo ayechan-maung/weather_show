@@ -23,7 +23,7 @@ class HttpWeatherRepository extends WeatherRepository {
   @override
   Future<ForecastWeather> getForecastWeather(String? city) async{
     final response = await httpService
-        .get("forecast.json", queryParameters: {'q': city, 'key': API_KEY, 'days': 3});
+        .get("forecast.json", queryParameters: {'q': city, 'key': API_KEY, 'days': 4});
     debugPrint("Response:: $response");
     return ForecastWeather.fromJson(response);
   }

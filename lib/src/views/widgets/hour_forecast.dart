@@ -9,7 +9,7 @@ class HourForecast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sty = TextStyle(fontWeight: FontWeight.bold, fontSize: 17);
+    final sty = TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Colors.white);
     return Container(
       margin: const EdgeInsets.all(8),
       child: Column(

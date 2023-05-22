@@ -8,6 +8,7 @@ import 'package:weather_show/src/auth/auth_gate.dart';
 import 'package:weather_show/src/bloc/weather_cubit.dart';
 import 'package:weather_show/src/model/forecast_weather_data_model.dart';
 import 'package:weather_show/src/utilities/extensions.dart';
+import 'package:weather_show/src/views/widgets/card_item.dart';
 import 'package:weather_show/src/views/widgets/search.dart';
 
 import '../../service/storage/fav_city_storage.dart';
@@ -40,7 +41,7 @@ class CurrentWeatherWidget extends StatelessWidget {
                       }
                     });
                   },
-                  icon: const Icon(Icons.search)),
+                  icon: const Icon(Icons.search, color: Colors.white)),
               PopupMenuButton<int>(
                 onSelected: (value) {
                   switch(value) {
@@ -73,14 +74,14 @@ class CurrentWeatherWidget extends StatelessWidget {
                             label: "Fahrenheit",
                             trailing: const Padding(
                               padding: EdgeInsets.only(right: 4.0),
-                              child: const Text(
+                              child: Text(
                                 " °F",
                                 style: TextStyle(fontSize: 17),
                               ),
                             ))),
                   ];
                 },
-                icon: const Icon(Icons.menu),
+                icon: const Icon(Icons.menu, color: Colors.white),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               )
             ],
@@ -97,16 +98,16 @@ class CurrentWeatherWidget extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Text(
                           currentWeather.location?.name ?? "",
-                          style: context.getTextTheme.headlineLarge,
+                          style: context.getTextTheme.headlineLarge!.copyWith(color: Colors.white),
                         ),
                       ),
                       Text(
                         currentWeather.current!.tempC!.toStringAsFixed(0) + " °C",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 45),
+                        style: const TextStyle(fontSize: 45,color: Colors.white),
                       ),
                       Text(
-                          "(${currentWeather.location!.region}, ${currentWeather.location!.country})"),
+                          "(${currentWeather.location!.region}, ${currentWeather.location!.country})", style: const TextStyle(color: Colors.white)),
                     ],
                   ),
                   Column(
@@ -137,18 +138,16 @@ class CurrentWeatherWidget extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Row(
               children: [
-                Icon(Icons.watch_later_outlined),
+                Icon(Icons.watch_later_outlined, color: Colors.white),
                 Text(
                   "Hourly Forecast",
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ],
             ),
           ),
-          Container(
+          CardItem(
             height: 120,
-            decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3), borderRadius: BorderRadius.circular(8)),
             margin: const EdgeInsets.symmetric(horizontal: 8),
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
@@ -164,18 +163,16 @@ class CurrentWeatherWidget extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(8, 12, 8, 0),
             child: Row(
               children: [
-                Icon(Icons.calendar_view_week),
+                Icon(Icons.calendar_view_week, color: Colors.white),
                 Text(
                   "Three Days Forecast",
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ],
             ),
           ),
-          Container(
+          CardItem(
             margin: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3), borderRadius: BorderRadius.circular(8)),
             child: Column(
               children: currentWeather.forecast!.forecastday!
                   .map((day) => Container(
@@ -184,7 +181,7 @@ class CurrentWeatherWidget extends StatelessWidget {
                           children: [
                             Text(
                               dayFormat(day.date ?? ""),
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
                             ),
                             Image.asset(
                               "assets/day/${getIcon(day.day!.condition!.code!)}.png",
@@ -194,7 +191,7 @@ class CurrentWeatherWidget extends StatelessWidget {
                             const Spacer(),
                             Text(
                               "${day.day!.mintempC!.round()} / ${day.day!.maxtempC!.round()}",
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                             ),
                           ],
                         ),
@@ -202,21 +199,19 @@ class CurrentWeatherWidget extends StatelessWidget {
                   .toList(),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3), borderRadius: BorderRadius.circular(8)),
+          CardItem(
             margin: const EdgeInsets.symmetric(horizontal: 8),
             padding: const EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(currentWeather.current!.condition!.text ?? "",
-                    style: const TextStyle(fontSize: 20)),
+                    style: const TextStyle(fontSize: 20, color: Colors.white)),
                 SizedBox(height: 12),
                 _itemRow("Feels Like",
-                    currentWeather.current!.feelslikeC!.round().toStringAsFixed(0) + " °"),
-                _itemRow("Wind", currentWeather.current!.windKph!.round().toStringAsFixed(0)),
-                _itemRow("Visibility", currentWeather.current!.visKm.toString()),
+                    currentWeather.current!.feelslikeC!.round().toStringAsFixed(0) + " °C"),
+                _itemRow("Wind", currentWeather.current!.windKph!.round().toStringAsFixed(0) + " kph"),
+                _itemRow("Visibility", currentWeather.current!.visKm.toString() + " km"),
                 _itemRow("Humidity", "${currentWeather.current!.humidity} %"),
                 _itemRow("Pressure", currentWeather.current!.pressureMb.toString()),
               ],
@@ -228,7 +223,7 @@ class CurrentWeatherWidget extends StatelessWidget {
   }
 
   Widget _itemRow(String label, String value) {
-    final sty = const TextStyle(fontSize: 18);
+    final sty = const TextStyle(fontSize: 18, color: Colors.white);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Row(
