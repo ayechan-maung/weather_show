@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:weather_show/main.dart';
+import 'package:weather_show/src/views/widgets/card_item.dart';
 
 class AdminView extends HookWidget {
   AdminView({Key? key}) : super(key: key);
@@ -16,7 +17,9 @@ class AdminView extends HookWidget {
     var isLoading = useState(false);
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: const Text("Admin"),
         actions: [
           IconButton(
@@ -43,65 +46,69 @@ class AdminView extends HookWidget {
       ),
       body: Stack(
         children: [
-          Form(
-            key: _formKey,
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                TextFormField(
-                  validator: (text){
-                    if(text!.isEmpty) {
-                      return 'Title field is required';
-                    }
-                    return null;
-                  },
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    label: Text('Title')
+          CardItem(
+            margin: const EdgeInsets.all(10),
+            color: Colors.white.withOpacity(0.7),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  TextFormField(
+                    validator: (text){
+                      if(text!.isEmpty) {
+                        return 'Title field is required';
+                      }
+                      return null;
+                    },
+                    controller: titleController,
+                    decoration: const InputDecoration(
+                      label: Text('Title')
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                TextFormField(
-                  validator: (text){
-                    if(text!.isEmpty) {
-                      return 'Body field is required';
-                    }
-                    return null;
-                  },
-                  controller: messageController,
-                  decoration: const InputDecoration(
-                      label: Text('Body')
+                  const SizedBox(
+                    height: 12,
                   ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                OutlinedButton(
-                  onPressed: () async {
-                    if(!_formKey.currentState!.validate()) {
-                      return;
-                    } else {
-                      isLoading.value = true;
-                      List<String?> tokens = await firebaseStoreService.getUsersToken();
-                      Map<String, dynamic> sendBody = {};
-                      Map<String, dynamic> notification = {};
-                      // notification
-                      notification['title'] = titleController.text;
-                      notification['body'] = messageController.text;
-                      // body
-                      sendBody['registration_ids'] = tokens;
-                      sendBody['direct_boot_ok'] = true;
-                      sendBody['notification'] = notification;
-                      debugPrint("body $sendBody");
-                      pushMessage.sendPushMessage(jsonEncode(sendBody));
-                      isLoading.value = false;
-                    }
-                  },
-                  child: const Text("Send Notifications"),
-                )
-              ],
+                  TextFormField(
+                    validator: (text){
+                      if(text!.isEmpty) {
+                        return 'Body field is required';
+                      }
+                      return null;
+                    },
+                    controller: messageController,
+                    decoration: const InputDecoration(
+                        label: Text('Body')
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  OutlinedButton(
+                    onPressed: () async {
+                      if(!_formKey.currentState!.validate()) {
+                        return;
+                      } else {
+                        isLoading.value = true;
+                        List<String?> tokens = await firebaseStoreService.getUsersToken();
+                        Map<String, dynamic> sendBody = {};
+                        Map<String, dynamic> notification = {};
+                        // notification
+                        notification['title'] = titleController.text;
+                        notification['body'] = messageController.text;
+                        // body
+                        sendBody['registration_ids'] = tokens;
+                        sendBody['direct_boot_ok'] = true;
+                        sendBody['notification'] = notification;
+                        debugPrint("body $sendBody");
+                        pushMessage.sendPushMessage(jsonEncode(sendBody));
+                        isLoading.value = false;
+                      }
+                    },
+                    child: const Text("Send Notifications"),
+                  )
+                ],
+              ),
             ),
           ),
           if(isLoading.value)

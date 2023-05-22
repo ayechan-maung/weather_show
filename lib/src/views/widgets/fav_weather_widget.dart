@@ -1,39 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:weather_show/src/bloc/db_bloc/fav_db_cubit.dart';
 import 'package:weather_show/src/service/storage/fav_city_storage.dart';
 import 'package:weather_show/src/views/widgets/card_item.dart';
 
 import '../../model/forecast_weather_data_model.dart';
 
-class FavoriteWeatherWidget extends StatelessWidget {
+class FavoriteWeatherWidget extends HookWidget {
   const FavoriteWeatherWidget();
+
   @override
   Widget build(BuildContext context) {
+    useEffect(() {
+      context.read<FavDbCubit>().getAllCities();
+      return () {};
+    }, const []);
 
-    return FutureBuilder(
-        future: FavCityStorage.instance.getAllWeather(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<ForecastWeather> cities = snapshot.requireData;
-            if (cities.isEmpty) {
-              return const Center(child: Column(
+    return BlocConsumer<FavDbCubit, FavDbState>(listener: (context, state) {
+      // context.watch<FavDbCubit>().getAllCities();
+    }, builder: (context, state) {
+      switch (state.status) {
+        case FavDBStatus.initial:
+          return Container();
+        case FavDBStatus.loading:
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        case FavDBStatus.success:
+          List<ForecastWeather> cities = state.weathers ?? [];
+          if (cities.isEmpty) {
+            return const Center(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('🏙️', style: TextStyle(fontSize: 64)),
                   Text('Your favorite cites are empty.')
                 ],
-              ));
-            }
-            return ListView.builder(
-              itemCount: cities.length,
-              itemBuilder: (context, index) {
-                return FavCityWidget(location: cities[index].location,current: cities[index].current);
-              },
+              ),
             );
           }
-          return const Center(
-            child: CircularProgressIndicator(),
+          return ListView.builder(
+            itemCount: cities.length,
+            itemBuilder: (context, index) {
+              final item = cities[index];
+              return Dismissible(
+                key: Key(item.location!.name!),
+                onDismissed: (dir) {
+                  print(dir);
+                  FavCityStorage.instance.deleteWeather(item.location!.id!);
+                },
+                child: FavCityWidget(location: item.location, current: item.current),
+              );
+            },
           );
-        });
+        case FavDBStatus.failure:
+          return const Center(
+            child: Text("Something went wrong!."),
+          );
+      }
+    });
   }
 }
 
@@ -47,7 +73,7 @@ class FavCityWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     const fontSty = TextStyle(color: Colors.white);
     return CardItem(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
       margin: const EdgeInsets.all(8),
       color: Colors.white.withOpacity(0.4),
       child: Row(
@@ -57,9 +83,13 @@ class FavCityWidget extends StatelessWidget {
             children: [
               Text(
                 location?.name ?? "",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
               ),
-              Text("(${location?.region}, ${location?.country})", style: fontSty,)
+              Text(
+                "(${location?.region}, ${location?.country})",
+                style: fontSty,
+              )
             ],
           ),
           const Spacer(),
@@ -68,7 +98,6 @@ class FavCityWidget extends StatelessWidget {
             width: 45,
             height: 45,
           ),
-
           Text(
             "${current!.tempC!.round()} °C",
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),

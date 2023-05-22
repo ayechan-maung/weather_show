@@ -7,8 +7,8 @@ import 'package:weather_show/src/service/location_service.dart';
 import 'package:weather_show/src/views/widgets/weather_initial_widget.dart';
 import 'package:weather_show/src/views/widgets/weather_loading_widget.dart';
 
-import '../bloc/weather_cubit.dart';
-import '../bloc/weather_state.dart';
+import '../bloc/weather_bloc/weather_cubit.dart';
+import '../bloc/weather_bloc/weather_state.dart';
 import 'weather_home.dart';
 import 'widgets/weather_fail_widget.dart';
 

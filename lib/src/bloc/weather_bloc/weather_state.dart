@@ -1,5 +1,5 @@
-import '../model/current_weather_data_model.dart';
-import '../model/forecast_weather_data_model.dart';
+import '../../model/current_weather_data_model.dart';
+import '../../model/forecast_weather_data_model.dart';
 
 enum WeatherStatus { initial, loading, success, failure }
 

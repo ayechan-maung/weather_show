@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_show/src/bloc/search_weather_cubit.dart';
+import 'package:weather_show/src/bloc/search_weather_bloc/search_weather_cubit.dart';
 import 'package:weather_show/src/repository/search_weather_repo.dart';
 import 'package:weather_show/src/service/http/dio_http_service.dart';
 import 'package:weather_show/src/views/search_detail_view.dart';
@@ -93,7 +93,7 @@ class CustomSearchDelegate extends SearchDelegate {
                     );
                   });
             case SearchWeatherStatus.failure:
-              return const Text("Exception");
+              return const Center(child: Text("Something went wrong!."));
           }
         },
         listener: (context, state) {});

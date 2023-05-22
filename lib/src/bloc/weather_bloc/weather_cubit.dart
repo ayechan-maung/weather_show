@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_show/src/service/http/dio_http_service.dart';
 
-import '../repository/http_weather_repository.dart';
+import '../../repository/http_weather_repository.dart';
 import 'weather_state.dart';
 
 class WeatherCubit extends Cubit<WeatherState> {

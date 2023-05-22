@@ -22,7 +22,7 @@ String dayFormat(String date) {
 }
 
 String dateFormat(String date) {
-  final dateFormat = DateFormat.EEEE().add_MMMMd().format(DateTime.parse(date));
+  final dateFormat = DateFormat.E().add_MMMMd().format(DateTime.parse(date));
 
   return dateFormat;
 }

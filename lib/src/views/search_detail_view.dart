@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:weather_show/src/bloc/db_bloc/fav_db_cubit.dart';
 import 'package:weather_show/src/views/widgets/search_detail_widget.dart';
 
-import '../bloc/search_detail_cubit.dart';
-import '../bloc/search_detail_state.dart';
-import '../bloc/weather_cubit.dart';
-import '../bloc/weather_state.dart';
+import '../bloc/search_detail_bloc/search_detail_cubit.dart';
+import '../bloc/search_detail_bloc/search_detail_state.dart';
+import '../bloc/weather_bloc/weather_cubit.dart';
+import '../bloc/weather_bloc/weather_state.dart';
 import 'widgets/weather_fail_widget.dart';
 import 'widgets/weather_initial_widget.dart';
 import 'widgets/weather_loading_widget.dart';
@@ -29,11 +30,11 @@ class SearchDetailView extends HookWidget {
       body: BlocConsumer<SearchDetailCubit, SearchDetailState>(
           builder: (context, state) {
             switch (state.status) {
-              case WeatherStatus.initial:
+              case SearchDetailStatus.initial:
                 return const WeatherInitialWidget();
-              case WeatherStatus.loading:
+              case SearchDetailStatus.loading:
                 return const WeatherLoading();
-              case WeatherStatus.success:
+              case SearchDetailStatus.success:
                 int? isDay = state.forecastWeather!.current!.isDay;
                 return Stack(
                   children: [
@@ -52,13 +53,16 @@ class SearchDetailView extends HookWidget {
                     SearchDetailWidget(state.forecastWeather!),
                   ],
                 );
-              case WeatherStatus.failure:
+              case SearchDetailStatus.failure:
                 return WeatherFailWidget(tryAgain: () {
                   context.read<SearchDetailCubit>().getWeatherDetail(location.value);
                 });
             }
           },
-          listener: (context, state) {}),
+          listener: (context, state) {
+            print("Status:: ${state.status}");
+            context.read<FavDbCubit>().checkValue(state.forecastWeather!);
+          }),
     );
   }
 

@@ -9,7 +9,7 @@ abstract class StorageService {
 
   Future<ForecastWeather> addCityWeather(ForecastWeather city);
 
-  Future<int> updateCityWeather(int id);
+  Future<int> updateCityWeather(Location id);
 
   Future<ForecastWeather> getCityWeather(int id);
 

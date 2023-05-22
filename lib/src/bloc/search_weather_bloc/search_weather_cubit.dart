@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../model/search_result.dart';
-import '../repository/search_weather_repo.dart';
+import '../../model/search_result.dart';
+import '../../repository/search_weather_repo.dart';
 
 part 'search_weather_state.dart';
 

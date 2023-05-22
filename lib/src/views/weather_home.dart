@@ -26,7 +26,7 @@ class WeatherHome extends StatelessWidget {
             const FavoriteWeatherWidget(),
             const AuthGate(),
           ][state],
-          bottomNavigationBar: NavigationBar(
+          bottomNavigationBar: NavigationBar(surfaceTintColor: Colors.white,
             backgroundColor: Colors.transparent,
             onDestinationSelected: (int index) {
               context.read<IndexCubit>().changeIndex(index);
