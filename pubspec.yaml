@@ -42,6 +42,7 @@ dependencies:
   flutter_hooks: ^0.18.6
   geolocator: ^9.0.2
   sqflite: ^2.2.8+4
+  floor: ^1.4.2
   path_provider: ^2.0.15
   firebase_messaging: ^14.6.1
   firebase_core: ^2.13.0
@@ -55,7 +56,7 @@ dependencies:
   cloud_firestore: ^4.7.1
   platform_device_id_v3: ^1.0.0
   get_it: ^7.6.0
-  lottie: ^2.3.2
+  dio_cache_interceptor: ^3.4.2
 
 #  flutterfire_ui: ^0.4.3+20
 #  location: ^4.4.0
@@ -63,6 +64,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  floor_generator: ^1.4.2
+  build_runner: ^2.1.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -27,12 +27,6 @@ class CurrentWeatherWidget extends StatelessWidget {
         return [
           SliverAppBar(
             backgroundColor: Colors.transparent,
-            leading: IconButton(
-              onPressed: () async {
-                await FavCityStorage.instance.addCityWeather(currentWeather);
-              },
-              icon: const Icon(Icons.favorite_border_rounded, color: Colors.white),
-            ),
             actions: [
               IconButton(
                   onPressed: () {

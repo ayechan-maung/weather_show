@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_show/src/bloc/search_weather_cubit.dart';
 import 'package:weather_show/src/repository/search_weather_repo.dart';
 import 'package:weather_show/src/service/http/dio_http_service.dart';
+import 'package:weather_show/src/views/search_detail_view.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   final SearchWeatherRepository search = SearchWeatherRepository(DioHttpService());
@@ -70,7 +71,8 @@ class CustomSearchDelegate extends SearchDelegate {
                     final weather = state.searchResult![index];
                     return InkWell(
                       onTap: () {
-                        close(context, weather.name);
+                        // close(context, weather.name);
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SearchDetailView(queryCity: weather.name ?? "")));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),

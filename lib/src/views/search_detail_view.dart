@@ -1,51 +1,32 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:weather_show/main.dart';
-import 'package:weather_show/src/service/location_service.dart';
-import 'package:weather_show/src/views/widgets/weather_initial_widget.dart';
-import 'package:weather_show/src/views/widgets/weather_loading_widget.dart';
+import 'package:weather_show/src/views/widgets/search_detail_widget.dart';
 
+import '../bloc/search_detail_cubit.dart';
+import '../bloc/search_detail_state.dart';
 import '../bloc/weather_cubit.dart';
 import '../bloc/weather_state.dart';
-import 'weather_home.dart';
 import 'widgets/weather_fail_widget.dart';
+import 'widgets/weather_initial_widget.dart';
+import 'widgets/weather_loading_widget.dart';
 
-Future<void> setupToken() async {
-  // Get the token each time the application loads
-  String? token = await messagingService.messageToken();
+class SearchDetailView extends HookWidget {
+  final String queryCity;
 
-  // Save the initial token to the database
-  await firebaseStoreService.saveTokenToDatabase(token!);
-
-  // Any time the token refreshes, store this in the database too.
-  FirebaseMessaging.instance.onTokenRefresh.listen(firebaseStoreService.saveTokenToDatabase);
-}
-
-class WeatherApp extends HookWidget {
-  const WeatherApp({Key? key}) : super(key: key);
+  const SearchDetailView({required this.queryCity, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     var location = useState('');
     useEffect(() {
-      FirebaseMessaging.onMessage.listen(messagingService.showFlutterNotification);
-
-      setupToken();
-
-      LocationService.shared.determinePosition().then((position) {
-        location.value = "${position.latitude},${position.longitude}";
-        context
-            .read<WeatherCubit>()
-            .fetchForecastWeather("${position.latitude},${position.longitude}");
-      });
+      context.read<SearchDetailCubit>().getWeatherDetail(queryCity);
 
       return () {};
     }, const []);
     return Scaffold(
-      body: BlocConsumer<WeatherCubit, WeatherState>(
+      body: BlocConsumer<SearchDetailCubit, SearchDetailState>(
           builder: (context, state) {
             switch (state.status) {
               case WeatherStatus.initial:
@@ -68,12 +49,12 @@ class WeatherApp extends HookWidget {
                           width: size.width,
                           height: size.height,
                           errorBuilder: (_, __, ___) => Container()),
-                    WeatherHome(forecastWeather: state.forecastWeather),
+                    SearchDetailWidget(state.forecastWeather!),
                   ],
                 );
               case WeatherStatus.failure:
                 return WeatherFailWidget(tryAgain: () {
-                  context.read<WeatherCubit>().fetchForecastWeather(location.value);
+                  context.read<SearchDetailCubit>().getWeatherDetail(location.value);
                 });
             }
           },

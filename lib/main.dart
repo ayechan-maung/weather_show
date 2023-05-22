@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:weather_show/color_schemes.dart';
 import 'package:weather_show/src/bloc/index_cubit.dart';
+import 'package:weather_show/src/bloc/search_detail_cubit.dart';
 import 'package:weather_show/src/bloc/search_weather_cubit.dart';
 import 'package:weather_show/src/repository/search_weather_repo.dart';
 import 'package:weather_show/src/service/auth_service.dart';
@@ -79,6 +80,7 @@ class MyWeatherApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => WeatherCubit(weatherRepository)),
+        BlocProvider(create: (context) => SearchDetailCubit(weatherRepository)),
         BlocProvider(create: (context) => SearchWeatherCubit(searchRepository)),
         BlocProvider(create: (context) => IndexCubit()),
       ],
