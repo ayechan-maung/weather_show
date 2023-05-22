@@ -4,7 +4,7 @@ import 'package:weather_show/src/bloc/index_cubit.dart';
 
 import '../model/forecast_weather_data_model.dart';
 import 'widgets/current_weather_widget.dart';
-import 'widgets/forecast_weather_widget.dart';
+import 'widgets/fav_weather_widget.dart';
 
 class WeatherHome extends StatelessWidget {
   final ForecastWeather? forecastWeather;
@@ -20,7 +20,7 @@ class WeatherHome extends StatelessWidget {
           backgroundColor: Colors.transparent,
           body: [
             CurrentWeatherWidget(forecastWeather!),
-            const ForecastWeatherWidget()
+            const FavoriteWeatherWidget()
           ][state],
           bottomNavigationBar: NavigationBar(
             backgroundColor: Colors.transparent,

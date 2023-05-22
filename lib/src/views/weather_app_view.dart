@@ -64,18 +64,22 @@ class WeatherApp extends HookWidget {
                   children: [
                     if (isDay == 0)
                       Image.asset(nightBgAssets(state.forecastWeather!.current!.condition!.text!),
-                          fit: BoxFit.fill, width: size.width, height: size.height),
+                          fit: BoxFit.fill,
+                          width: size.width,
+                          height: size.height,
+                          errorBuilder: (_, __, ___) => Container()),
                     if (isDay == 1)
                       Image.asset(dayBgAssets(state.forecastWeather!.current!.condition!.text!),
-                          fit: BoxFit.fill, width: size.width, height: size.height),
+                          fit: BoxFit.fill,
+                          width: size.width,
+                          height: size.height,
+                          errorBuilder: (_, __, ___) => Container()),
                     WeatherHome(forecastWeather: state.forecastWeather),
                   ],
                 );
               case WeatherStatus.failure:
-                return WeatherFailWidget(tryAgain:(){
-                  context
-                      .read<WeatherCubit>()
-                      .fetchForecastWeather(location.value);
+                return WeatherFailWidget(tryAgain: () {
+                  context.read<WeatherCubit>().fetchForecastWeather(location.value);
                 });
             }
           },
@@ -94,8 +98,10 @@ class WeatherApp extends HookWidget {
         return "$background/sunny_cloudy.jpg";
       case "cloudy":
         return "assets/night_bg/heavy_cloudy.jpg";
-      default:
+      case "partly cloudy":
         return "$background/partly_cloudy.jpg";
+      default:
+        return "$background/cloudy.jpg";
     }
   }
 
@@ -107,7 +113,9 @@ class WeatherApp extends HookWidget {
       case "sunny_cloudy":
         return "$background/sunny_cloudy.jpg";
       case "cloudy":
-        return "assets/night_bg/heavy_cloudy.jpg";
+        return "$background/night_cloudy.jpg";
+      case "partly cloudy":
+        return "$background/night_cloudy.jpg";
       default:
         return "$background/night_clear.jpg";
     }

@@ -27,12 +27,13 @@ class CurrentWeatherWidget extends StatelessWidget {
         return [
           SliverAppBar(
             backgroundColor: Colors.transparent,
+            leading: IconButton(
+              onPressed: () async {
+                await FavCityStorage.instance.addCityWeather(currentWeather);
+              },
+              icon: const Icon(Icons.favorite_border_rounded, color: Colors.white),
+            ),
             actions: [
-              IconButton(
-                  onPressed: () async{
-                    await FavCityStorage.instance.addCityWeather(currentWeather);
-                  },
-                  icon: const Icon(Icons.favorite_border_rounded)),
               IconButton(
                   onPressed: () {
                     showSearch(context: context, delegate: CustomSearchDelegate()).then((value) {
@@ -44,7 +45,7 @@ class CurrentWeatherWidget extends StatelessWidget {
                   icon: const Icon(Icons.search, color: Colors.white)),
               PopupMenuButton<int>(
                 onSelected: (value) {
-                  switch(value) {
+                  switch (value) {
                     case 0:
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) => const AuthGate()));
@@ -85,7 +86,7 @@ class CurrentWeatherWidget extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               )
             ],
-            expandedHeight: 150,
+            expandedHeight: 165,
             flexibleSpace: FlexibleSpaceBar(
               background: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -104,10 +105,11 @@ class CurrentWeatherWidget extends StatelessWidget {
                       Text(
                         currentWeather.current!.tempC!.toStringAsFixed(0) + " °C",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 45,color: Colors.white),
+                        style: const TextStyle(fontSize: 45, color: Colors.white),
                       ),
                       Text(
-                          "(${currentWeather.location!.region}, ${currentWeather.location!.country})", style: const TextStyle(color: Colors.white)),
+                          "(${currentWeather.location!.region}, ${currentWeather.location!.country})",
+                          style: const TextStyle(color: Colors.white)),
                     ],
                   ),
                   Column(
@@ -130,6 +132,7 @@ class CurrentWeatherWidget extends StatelessWidget {
         ];
       },
       body: ListView(
+        padding: const EdgeInsets.only(top: 16),
         children: [
           // const SizedBox(
           //   height: 10,
@@ -179,19 +182,39 @@ class CurrentWeatherWidget extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Text(
-                              dayFormat(day.date ?? ""),
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
-                            ),
-                            Image.asset(
-                              "assets/day/${getIcon(day.day!.condition!.code!)}.png",
-                              width: 45,
-                              height: 45,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  dayFormat(day.date ?? ""),
+                                  style: const TextStyle(
+                                      fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                ),
+                                Text(day.day!.condition!.text ?? "", style:const TextStyle(color: Colors.white),)
+                              ],
                             ),
                             const Spacer(),
-                            Text(
-                              "${day.day!.mintempC!.round()} / ${day.day!.maxtempC!.round()}",
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                            Image.asset(
+                              "assets/day/${getIcon(day.day!.condition!.code!)}.png",
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                              errorBuilder: (ctx, _, __)=> const Icon(Icons.info, color: Colors.grey),
+                            ),
+
+                            Column(
+                              children: [
+                                Text(
+                                  "${day.day!.maxtempC!.round()} °",
+                                  style: const TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+                                ),
+                                Text(
+                                  "${day.day!.mintempC!.round()} °",
+                                  style: const TextStyle(
+                                      fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -210,7 +233,8 @@ class CurrentWeatherWidget extends StatelessWidget {
                 SizedBox(height: 12),
                 _itemRow("Feels Like",
                     currentWeather.current!.feelslikeC!.round().toStringAsFixed(0) + " °C"),
-                _itemRow("Wind", currentWeather.current!.windKph!.round().toStringAsFixed(0) + " kph"),
+                _itemRow(
+                    "Wind", currentWeather.current!.windKph!.round().toStringAsFixed(0) + " kph"),
                 _itemRow("Visibility", currentWeather.current!.visKm.toString() + " km"),
                 _itemRow("Humidity", "${currentWeather.current!.humidity} %"),
                 _itemRow("Pressure", currentWeather.current!.pressureMb.toString()),

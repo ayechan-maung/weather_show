@@ -1,15 +1,16 @@
 
 import 'package:http/http.dart' as http;
+import 'package:weather_show/app_consts.dart';
 
 class PushMessage {
 
   Future<void> sendPushMessage(String body) async {
     try {
       final res = await http.post(
-        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        Uri.parse(SEND_URL),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': "key=AAAAybN_4vM:APA91bErSLZVSUphxZBreSSCZTm4iKGCYJu3n0Zl6UY5OrIUqNO4EnDstpWV1TaEBgxmKXYVoi-vegMDRG58n5rTAE63LJ51_8k5Mt3aWjUu4iQ8gJDAPlNPnYCKgeDT85kp3PPRldmd",
+          'Authorization': SERVER_KEY,
         },
         body: body,
       );
