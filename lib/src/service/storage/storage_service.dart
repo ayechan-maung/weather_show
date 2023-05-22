@@ -96,7 +96,7 @@ abstract class StorageService {
 
   Future<ForecastWeather> getCityWeather(int id);
 
-  Future<List<ForecastWeather>> getAllWeather();
+  Future<List<Map<String,dynamic>>> getAllWeather();
 
   Future<int> deleteWeather(int id);
 

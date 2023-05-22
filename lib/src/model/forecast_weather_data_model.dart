@@ -120,6 +120,7 @@ class ForecastWeather {
 }
 
 class Location {
+  int? id;
   String? name;
   String? region;
   String? country;
@@ -152,6 +153,7 @@ class Location {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['name'] = this.name;
     data['region'] = this.region;
     data['country'] = this.country;
@@ -438,9 +440,13 @@ class Day {
     data['daily_chance_of_rain'] = this.dailyChanceOfRain;
     data['daily_will_it_snow'] = this.dailyWillItSnow;
     data['daily_chance_of_snow'] = this.dailyChanceOfSnow;
-    if (this.condition != null) {
-      data['condition'] = this.condition!.toJson();
-    }
+    // if (this.condition != null) {
+    //   data['condition'] = this.condition!.toJson();
+    // }
+    data['condition_text'] = this.condition?.text;
+    data['condition_icon'] = this.condition?.icon;
+    data['condition_code'] = this.condition?.code;
+
     data['uv'] = this.uv;
     return data;
   }
@@ -605,9 +611,12 @@ class Hour {
     data['temp_c'] = this.tempC;
     data['temp_f'] = this.tempF;
     data['is_day'] = this.isDay;
-    if (this.condition != null) {
-      data['condition'] = this.condition!.toJson();
-    }
+    // if (this.condition != null) {
+    //   data['condition'] = this.condition!.toJson();
+    // }
+    data['condition_text'] = this.condition?.text;
+    data['condition_icon'] = this.condition?.icon;
+    data['condition_code'] = this.condition?.code;
     data['wind_mph'] = this.windMph;
     data['wind_kph'] = this.windKph;
     data['wind_degree'] = this.windDegree;
@@ -630,7 +639,6 @@ class Hour {
     data['chance_of_snow'] = this.chanceOfSnow;
     data['vis_km'] = this.visKm;
     data['vis_miles'] = this.visMiles;
-    data['uv'] = this.uv;
     return data;
   }
 }

@@ -45,7 +45,7 @@ class FavCityStorage implements StorageService {
           'location_id': locationId,
           ...dailyForecastData!.toJson(),
         };
-        final dailyForecastId = await db.insert('daily_forecasts', dailyForecastRow);
+        final dailyForecastId = await txn.insert('daily_forecasts', dailyForecastRow);
 
         // Insert hourly forecast data
         final hourlyForecastData = forecastDay.hour;
@@ -54,12 +54,12 @@ class FavCityStorage implements StorageService {
             'daily_forecast_id': dailyForecastId,
             ...hourlyForecast.toJson(),
           };
-          await db.insert('hourly_forecasts', hourlyForecastRow);
+          await txn.insert('hourly_forecasts', hourlyForecastRow);
         }
       }
     });
 
-    print("City $city");
+    print("City ${city.current}");
 
     return city;
   }
@@ -77,7 +77,7 @@ class FavCityStorage implements StorageService {
   }
 
   @override
-  Future<List<ForecastWeather>> getAllWeather() async {
+  Future<List<Map<String, dynamic>>> getAllWeather() async {
     final db = await instance.database;
     // final result = await db.query(tableLocation);
     // final List<ForecastWeather> weathers = [];
@@ -88,7 +88,25 @@ class FavCityStorage implements StorageService {
       INNER JOIN hourly_forecasts ON daily_forecasts.id = hourly_forecasts.daily_forecast_id
     ''';
     final raw = await db.rawQuery(query);
-    return raw.map((e) => ForecastWeather.fromJson(e)).toList();
+    // final result =  raw.map((json) {
+    //
+    //
+    //   // print(json['name']);
+    //   final location = Location(
+    //     name: json['name'] as String,
+    //     region: json['region'] as String,
+    //     country: json['country'] as String,
+    //   );
+    //   final current = Current(
+    //     isDay: json['is_day'] as int
+    //   );
+    //   final weather = ForecastWeather(
+    //       location: location,
+    //     current: current
+    //   );
+    //   return weather;
+    // }).toList();
+    return raw;
     // print("result $result");
 
     // for (final weather in result) {

@@ -9,6 +9,7 @@ import 'package:weather_show/src/bloc/weather_cubit.dart';
 import 'package:weather_show/src/model/forecast_weather_data_model.dart';
 import 'package:weather_show/src/utilities/extensions.dart';
 import 'package:weather_show/src/views/widgets/card_item.dart';
+import 'package:weather_show/src/views/widgets/fav_weather_widget.dart';
 import 'package:weather_show/src/views/widgets/search.dart';
 
 import '../../service/storage/fav_city_storage.dart';
@@ -31,9 +32,9 @@ class CurrentWeatherWidget extends StatelessWidget {
               IconButton(
                   onPressed: () {
                     showSearch(context: context, delegate: CustomSearchDelegate()).then((value) {
-                      if (value != null) {
-                        context.read<WeatherCubit>().fetchForecastWeather(value);
-                      }
+                      // if (value != null) {
+                      //   context.read<WeatherCubit>().fetchForecastWeather(value);
+                      // }
                     });
                   },
                   icon: const Icon(Icons.search, color: Colors.white)),
