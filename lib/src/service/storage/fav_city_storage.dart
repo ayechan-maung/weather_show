@@ -108,7 +108,6 @@ class FavCityStorage implements StorageService {
     await db.execute('''
           CREATE TABLE locations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            is_favorite INTEGER,
             name TEXT,
             region TEXT,
             country TEXT,

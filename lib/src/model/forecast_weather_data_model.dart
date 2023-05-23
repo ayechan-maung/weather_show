@@ -173,7 +173,7 @@ class Location {
     return data;
   }
 
-  static List<String> column = ['id','is_favorite', 'name', 'region', 'country', 'lat', 'lon', 'tz_id', 'localtime_epoch', 'localtime'];
+  static List<String> column = ['id', 'name', 'region', 'country', 'lat', 'lon', 'tz_id', 'localtime_epoch', 'localtime'];
 }
 
 class Current {
